@@ -11,6 +11,10 @@ import (
 	"github.com/crawer"
 )
 
+type ab struct {
+	Url, Img, Name string
+}
+
 type dt struct {
 	Details []string
 }
@@ -80,10 +84,52 @@ func NotFoundHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func selector(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm() //解析参数，默认是不会解析的
+	fmt.Println("path", r.URL.Path)
+	for k, v := range r.Form {
+		fmt.Println("key:", k)
+		fmt.Println("val:", strings.Join(v, ""))
+	}
+	jobName := r.FormValue("job_name")
+	if jobName != "" {
+		var URL = ""
+		list := c.GetList()
+		for _, album := range list {
+			if album.Name == jobName {
+				URL = album.URL
+				continue
+			}
+		}
+		c.AddDownloadRequest(URL)
+	}
+	t, err := template.ParseFiles("../html/selector.html")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	if len(r.Form) != 0 {
+		http.Redirect(w, r, "/selector/", http.StatusFound)
+	}
+	var abs = make([]ab, 0)
+	list := c.GetList()
+	for _, a := range list {
+		abs = append(abs, ab{
+			Url:  a.URL,
+			Img:  a.Img,
+			Name: a.Name,
+		})
+	}
+	t.Execute(w, struct {
+		Albums []ab
+	}{abs})
+}
+
 func main() {
 	c.Start()
 	http.HandleFunc("/index/", index) //设置访问的路由
 	http.HandleFunc("/detail.html", detail)
+	http.HandleFunc("/selector/", selector)
 	http.HandleFunc("/", NotFoundHandler)
 	err := http.ListenAndServe(":9090", nil) //设置监听的端口
 	if err != nil {

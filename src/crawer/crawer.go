@@ -1,6 +1,7 @@
 package crawer
 
 import (
+	"bytes"
 	"crypto/tls"
 	"errors"
 	"fmt"
@@ -19,13 +20,13 @@ import (
 
 // Album url和名字
 type Album struct {
-	URL, Name string
+	URL, Name, Img string
 }
 
 type Crawer struct {
 	searchChan, pageChan, albumChan, downloadChan chan string
 	tr                                            *http.Transport
-	keywordsAlbumMap                              map[string][]Album
+	albumList                                     []Album
 	jobSet                                        map[string]bool
 }
 
@@ -38,7 +39,7 @@ func NewCrawer() *Crawer {
 		make(chan string, 10), make(chan string, 10), &http.Transport{
 			Proxy:           http.ProxyURL(proxyURL),
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-		}, make(map[string][]Album), make(map[string]bool)}
+		}, make([]Album, 0), make(map[string]bool)}
 }
 
 func getLocalProxyURL(port int) (*url.URL, error) {
@@ -105,13 +106,13 @@ func (c *Crawer) pageDealer() {
 			fmt.Println(err)
 			continue
 		}
-		u, err := url.Parse(pageURL)
-		if err != nil {
-			fmt.Println(err)
-			continue
-		}
-		m, _ := url.ParseQuery(u.RawQuery)
-		word := m["q"][0]
+		//u, err := url.Parse(pageURL)
+		//if err != nil {
+		//	fmt.Println(err)
+		//	continue
+		//}
+		//m, _ := url.ParseQuery(u.RawQuery)
+		//word := m["q"][0]
 		links := collectlinks.All(resp.Body)
 		for _, link := range links {
 			matched, err := regexp.MatchString("photos-index-aid-\\d+\\.html", link)
@@ -119,7 +120,7 @@ func (c *Crawer) pageDealer() {
 				fmt.Println("match string error")
 			}
 			if matched {
-				c.keywordsAlbumMap[word] = append(c.keywordsAlbumMap[word], Album{URL: link, Name: "?"})
+				//c.albumList[word] = append(c.albumList[word], Album{URL: link, Name: "?"})
 				c.albumChan <- link
 			}
 		}
@@ -147,14 +148,31 @@ func (c *Crawer) albumDealer() {
 			fmt.Println("get " + albumLink + " response" + resp.Status)
 			continue
 		}
-		links := collectlinks.All(resp.Body)
+		b, err := ioutil.ReadAll(resp.Body)
+		links := collectlinks.All(bytes.NewReader(b))
+		doc, err := goquery.NewDocumentFromReader(bytes.NewReader(b))
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+		name := doc.Find("div.userwrap > h2").Eq(0).Text()
+		img, e := doc.Find("div.asTBcell.uwthumb > img").Eq(0).Attr("src")
+		if !e {
+			img = "../img/img.png"
+		}
+		fmt.Println("name : " + name)
 		for _, link := range links {
 			matched, err := regexp.MatchString("download-index-aid-\\d+\\.html", link)
 			if err != nil {
 				fmt.Println("match string error2")
 			}
 			if matched {
-				c.downloadChan <- link
+				c.albumList = append(c.albumList, Album{
+					URL:  link,
+					Name: name,
+					Img:  img,
+				})
+				//c.downloadChan <- link
 			}
 		}
 		_ = resp.Body.Close()
@@ -244,8 +262,8 @@ func (c *Crawer) GetDownloadingJob() []string {
 }
 
 // GetList 获得关键词对应的列表
-func (c *Crawer) GetList(keyWords string) []Album {
-	return c.keywordsAlbumMap[keyWords]
+func (c *Crawer) GetList() []Album {
+	return c.albumList
 }
 
 // AddSearchRequest 添加搜索需求
@@ -257,6 +275,12 @@ func (c *Crawer) AddSearchRequest(keyWords string) {
 // AddDownloadRequest 添加下载需求
 func (c *Crawer) AddDownloadRequest(url string) {
 	c.downloadChan <- url
+	for i, v := range c.albumList {
+		if v.URL == url {
+			copy(c.albumList[i:], c.albumList[i+1:])
+			c.albumList = c.albumList[:len(c.albumList)-1]
+		}
+	}
 }
 
 //func main() {
