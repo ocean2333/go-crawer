@@ -3,10 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script type="text/javascript" src="http://lib.sinaapp.com/js/jquery/2.2.4/jquery-2.2.4.min.js"></script>
     <script type="text/javascript">
-        function send_job(){
-
-        }
+    $(document).ready(function(){
+        $("input").click(function(){
+            var idx = $(this).attr('id')
+            var url = $("#"+"download-href-"+idx).attr("href")
+            var kvdata = "album_url="+url
+            $.ajax({
+                type:"GET",
+                url:"/download/",
+                data:kvdata,
+                success: function(){
+                    alert("add success!")
+                }
+            });
+        });
+    });
     </script>
 </head>
 <body>
@@ -19,10 +32,10 @@
                 <td class="text-td" width="200">
                     <img src="{{$element.Img}}" width="162" height="204">
                     <br>
-                    <a href="https://wnacg.net{{$element.Url}}" class="name-a"> {{ $element.Name }} </a>
+                    <a id="download-href-{{$index}}" href="https://wnacg.net{{$element.Url}}" class="name-a"> {{ $element.Name }} </a>
                 </td>
-                <td class="button-td">
-                    <input onclick="send_job()" id="download" type="submit" value="下载" />
+                <td>
+                    <input id="{{$index}}" type="submit" value="下载" class="button-td"/>
                 </td>
             </tr>
             {{ end }}

@@ -1,14 +1,14 @@
 package main
 
 import (
-	"fmt"
 	"html/template"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"strings"
 
-	"github.com/crawer"
+	"github.com/ocean233/go-crawer/src/album"
+	"github.com/ocean233/go-crawer/src/crawer"
+	"github.com/ocean233/go-crawer/src/logger"
 )
 
 type ab struct {
@@ -21,27 +21,10 @@ type dt struct {
 
 var c = crawer.NewCrawer()
 
-func sayhelloName(w http.ResponseWriter, r *http.Request) {
-	r.ParseForm()       //解析参数，默认是不会解析的
-	fmt.Println(r.Form) //这些信息是输出到服务器端的打印信息
-	fmt.Println("path", r.URL.Path)
-	fmt.Println("scheme", r.URL.Scheme)
-	fmt.Println(r.Form["url_long"])
-	for k, v := range r.Form {
-		fmt.Println("key:", k)
-		fmt.Println("val:", strings.Join(v, ""))
-	}
-	// if r.Form["input"] != nil {
-	// 	AddSearchRequest(r.Form["input"])
-	// }
-}
-
 func index(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm() //解析参数，默认是不会解析的
-	fmt.Println("path", r.URL.Path)
+	logger.Log.Info("path", r.URL.Path)
 	for k, v := range r.Form {
-		fmt.Println("key:", k)
-		fmt.Println("val:", strings.Join(v, ""))
 		if k == "input" {
 			c.AddSearchRequest(v[0])
 		}
@@ -55,15 +38,11 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 func detail(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm() //解析参数，默认是不会解析的
-	fmt.Println("path", r.URL.Path)
-	for k, v := range r.Form {
-		fmt.Println("key:", k)
-		fmt.Println("val:", strings.Join(v, ""))
-	}
+	logger.Log.Info("path", r.URL.Path)
 	jobs := c.GetDownloadingJob()
 	t, err := template.ParseFiles("../html/detail.html")
 	if err != nil {
-		fmt.Println(err)
+		logger.Log.Error(err)
 		t, _ = template.ParseFiles("../html/5xx.html")
 		t.Execute(w, nil)
 		return
@@ -86,15 +65,12 @@ func NotFoundHandler(w http.ResponseWriter, r *http.Request) {
 
 func selector(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm() //解析参数，默认是不会解析的
-	fmt.Println("path", r.URL.Path)
-	for k, v := range r.Form {
-		fmt.Println("key:", k)
-		fmt.Println("val:", strings.Join(v, ""))
-	}
+	logger.Log.Info("path", r.URL.Path)
 	jobName := r.FormValue("job_name")
 	if jobName != "" {
 		var URL = ""
-		list := c.GetList()
+		// TODO: multi page show
+		list := album.GetAPageAlbums(0)
 		for _, album := range list {
 			if album.Name == jobName {
 				URL = album.URL
@@ -105,14 +81,14 @@ func selector(w http.ResponseWriter, r *http.Request) {
 	}
 	t, err := template.ParseFiles("../html/selector.html")
 	if err != nil {
-		fmt.Println(err)
+		logger.Log.Error(err)
 		return
 	}
 	if len(r.Form) != 0 {
 		http.Redirect(w, r, "/selector/", http.StatusFound)
 	}
 	var abs = make([]ab, 0)
-	list := c.GetList()
+	list := album.GetAPageAlbums(0)
 	for _, a := range list {
 		abs = append(abs, ab{
 			Url:  a.URL,
@@ -125,14 +101,26 @@ func selector(w http.ResponseWriter, r *http.Request) {
 	}{abs})
 }
 
+func downloadHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet {
+		logger.Log.Infof("path %s", r.URL.Path)
+		r.ParseForm()
+		url := r.FormValue("album_url")
+		if url != "" {
+			c.AddDownloadRequest(url)
+		}
+	}
+}
+
 func main() {
 	c.Start()
 	http.HandleFunc("/index/", index) //设置访问的路由
 	http.HandleFunc("/detail.html", detail)
 	http.HandleFunc("/selector/", selector)
-	http.HandleFunc("/", NotFoundHandler)
+	http.HandleFunc("/download/", downloadHandler)
+	http.HandleFunc("/", index)
 	err := http.ListenAndServe(":9090", nil) //设置监听的端口
 	if err != nil {
-		log.Fatal("ListenAndServe: ", err)
+		logger.Log.Fatal("ListenAndServe: ", err)
 	}
 }
