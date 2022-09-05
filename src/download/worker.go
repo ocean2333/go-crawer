@@ -1,6 +1,7 @@
 package download
 
 import (
+	"crypto/tls"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -10,6 +11,7 @@ import (
 
 	"github.com/ocean233/go-crawer/src/config"
 	"github.com/ocean233/go-crawer/src/logger"
+	"github.com/ocean233/go-crawer/src/proxy"
 )
 
 type downloadWorker struct {
@@ -23,9 +25,19 @@ func (w *downloadWorker) work() {
 		if check(url) {
 			logger.Log.Infof("download start: %s", url)
 			handler.registJob(url, w)
-			client := http.Client{
-				// seems zip file can be downloaded without proxy
-				// Transport: proxy.Transport,
+			var client http.Client
+			proxy, err := proxy.GetAProxyUrl()
+			if err != nil {
+				logger.Log.Warnf("worker get proxy url err, failed to work")
+				logger.Log.Warnf("send url %s back", url)
+
+				continue
+			}
+			client = http.Client{
+				Transport: &http.Transport{
+					Proxy:           http.ProxyURL(proxy),
+					TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+				},
 				Timeout: 1000 * time.Second,
 			}
 
