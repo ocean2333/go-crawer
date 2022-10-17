@@ -3,7 +3,7 @@ package config
 import (
 	"io/ioutil"
 
-	"github.com/ocean2333/go-crawer/src/logger"
+	"github.com/ocean2333/go-crawer/server/logger"
 	"gopkg.in/yaml.v2"
 )
 

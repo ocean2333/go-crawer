@@ -3,8 +3,8 @@ package main
 import (
 	"net/http"
 
-	"github.com/ocean2333/go-crawer/src/handler"
-	"github.com/ocean2333/go-crawer/src/logger"
+	"github.com/ocean2333/go-crawer/server/handler"
+	"github.com/ocean2333/go-crawer/server/logger"
 )
 
 func main() {

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/ocean2333/go-crawer/src/admin/cmds/album"
+	"github.com/ocean2333/go-crawer/server/admin/cmds/album"
 	"github.com/spf13/cobra"
 )
 

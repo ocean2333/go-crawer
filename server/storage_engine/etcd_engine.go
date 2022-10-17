@@ -9,9 +9,9 @@ import (
 
 	"github.com/coreos/etcd/clientv3"
 	"github.com/coreos/etcd/clientv3/concurrency"
-	"github.com/ocean2333/go-crawer/src/common"
-	"github.com/ocean2333/go-crawer/src/config"
-	"github.com/ocean2333/go-crawer/src/logger"
+	"github.com/ocean2333/go-crawer/server/common"
+	"github.com/ocean2333/go-crawer/server/config"
+	"github.com/ocean2333/go-crawer/server/logger"
 )
 
 var (

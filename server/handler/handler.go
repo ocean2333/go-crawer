@@ -5,10 +5,10 @@ import (
 	"net/http"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/ocean2333/go-crawer/src/logger"
-	"github.com/ocean2333/go-crawer/src/model"
-	"github.com/ocean2333/go-crawer/src/net"
-	"github.com/ocean2333/go-crawer/src/parser"
+	"github.com/ocean2333/go-crawer/server/logger"
+	"github.com/ocean2333/go-crawer/server/model"
+	"github.com/ocean2333/go-crawer/server/net"
+	"github.com/ocean2333/go-crawer/server/parser"
 )
 
 // download handler receive two args: rid and aid (rule id and album id), use rid to find rule, use aid to find album, it will automatically download all the images in the album

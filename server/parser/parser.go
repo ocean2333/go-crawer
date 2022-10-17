@@ -10,10 +10,10 @@ import (
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/ocean2333/go-crawer/src/logger"
-	"github.com/ocean2333/go-crawer/src/model"
-	"github.com/ocean2333/go-crawer/src/net"
-	"github.com/ocean2333/go-crawer/src/storage_engine"
+	"github.com/ocean2333/go-crawer/server/logger"
+	"github.com/ocean2333/go-crawer/server/model"
+	"github.com/ocean2333/go-crawer/server/net"
+	"github.com/ocean2333/go-crawer/server/storage_engine"
 )
 
 type findable interface {
