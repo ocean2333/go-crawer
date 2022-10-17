@@ -1,0 +1,168 @@
+{
+    "rid":"1",
+    "title": "wnacg",
+    "homepage_url": "https://wnacg.net/index.php",
+    "search_url": "https://wnacg.net/search/index.php?q={patten-keywords}&m=&syn=yes&f=_all&s=create_time_DESC&p={patten-page}",
+    "album_url": "https://wnacg.net/photos-index-page-{patten-page}-aid-{patten-aid}.html",
+    "homepage_rules": {
+        "selectors":[
+        {
+            "name": "item",
+            "selector": ["ul.cc" , "li"]
+        },
+        {
+            "name": "cover",
+            "fun": "attr",
+            "param": "src",
+            "selector": ["img"],
+            "prefix":"https:"
+        },
+        {
+            "name" :"id",
+            "fun": "attr",
+            "param": "href",
+            "regexp": "(\\d+)",
+            "selector": ["a"]
+        },
+        {
+            "name": "title",
+            "fun": "attr",
+            "param": "alt",
+            "selector": ["img"]
+        }]
+    },
+    "album_rules":{
+        "selectors":[
+        {
+            "name":"item", 
+            "selector": ["ul.cc" , "li"]
+        },
+        {
+            "name":"id",
+            "fun": "text",
+            "selector": ["span.name"]
+        },
+        {
+            "name":"thumbnail",
+            "fun": "attr",
+            "param": "src",
+            "selector": ["img"],
+            "prefix":"https:"
+        },
+        {
+            "name":"url",
+            "fun": "attr",
+            "param": "href",
+            "selector": ["a"],
+            "prefix":"https://wnacg.net"
+        },
+        {
+            "name":"high_res",
+            "fun": "attr",
+            "param": "src",
+            "selector": ["img.photo"],
+            "prefix":"https:"
+        }]
+    },
+    "search_rules": {
+        "selectors":[
+        {
+            "name":"item",
+            "selector": ["ul.cc" , "li"]
+        },
+        {
+            "name":"cover",
+            "fun": "attr",
+            "param": "src",
+            "selector": ["img"],
+            "prefix":"https:"
+        },
+        {
+            "name":"id",
+            "fun": "attr",
+            "param": "href",
+            "regexp": "(\\d+)",
+            "selector": ["a"]
+        },
+        {
+            "name":"title",
+            "fun": "attr",
+            "param": "alt",
+            "selector": ["img"]
+        }]
+    },
+    "categories": [
+        {
+            "cid": 1,
+            "title": "首页",
+            "url": "https://wnacg.net/index.php"
+        },
+        {
+            "cid": 2,
+            "title": "最新 更新",
+            "url": "https://wnacg.net/albums-index-page-{page:1}.html"
+        },
+        {
+            "cid": 3,
+            "title": "同人誌",
+            "url": "https://wnacg.net/albums-index-page-{page:1}-cate-5.html"
+        },
+        {
+            "cid": 4,
+            "title": "同人誌>漢化",
+            "url": "https://wnacg.net/albums-index-page-{page:1}-cate-1.html"
+        },
+        {
+            "cid": 5,
+            "title": "同人誌>日語",
+            "url": "https://wnacg.net/albums-index-page-{page:1}-cate-12.html"
+        },
+        {
+            "cid": 6,
+            "title": "同人誌>CG畫集",
+            "url": "https://wnacg.net/albums-index-page-{page:1}-cate-2.html"
+        },
+        {
+            "cid": 7,
+            "title": "單行本",
+            "url": "https://wnacg.net/albums-index-page-{page:1}-cate-6.html"
+        },
+        {
+            "cid": 8,
+            "title": "單行本>漢化",
+            "url": "https://wnacg.net/albums-index-page-{page:1}-cate-9.html"
+        },
+        {
+            "cid": 9,
+            "title": "單行本>日語",
+            "url": "https://wnacg.net/albums-index-page-{page:1}-cate-13.html"
+        },
+        {
+            "cid": 10,
+            "title": "雜誌&短篇",
+            "url": "https://wnacg.net/albums-index-page-{page:1}-cate-7.html"
+        },
+        {
+            "cid": 11,
+            "title": "雜誌&短篇>漢化",
+            "url": "https://wnacg.net/albums-index-page-{page:1}-cate-10.html"
+        },
+        {
+            "cid": 12,
+            "title": "雜誌&短篇>日語",
+            "url": "https://wnacg.net/albums-index-page-{page:1}-cate-14.html"
+        },
+        {
+            "cid": 13,
+            "title": "Cosplay 寫真",
+            "url": "https://wnacg.net/albums-index-page-{page:1}-cate-3.html"
+        }
+    ],
+    "global_rules":{
+        "preload_home":1,
+        "preload_album":1,
+        "preload_pic":5,
+        "metadata_max_age":-1,
+        "max_connect_num":1000
+    }
+}
