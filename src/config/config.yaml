@@ -1,0 +1,13 @@
+global_config:
+  save_path: "./base"
+  thumbnail_path: "./thumbnail"
+  highres_path: "./highres"
+etcd_config:
+  leader_election_config:
+    leader_lease_period: 10 # Seconds
+    election_period: 10 # Seconds
+  storage_engine_config:
+    name: "etcd"
+    addr: "localhost:2379"
+    dial_timeout: 5
+    rpc_timeout: 30
