@@ -87,8 +87,19 @@ func InitEtcdEngine() {
 }
 
 func GetInstance() StorageEngine {
-	InitEtcdEngine()
 	return seInstance
+}
+
+func InitStorageEngine(c *config.StorageEngineConfig) {
+	var err error
+	if creator, exist := creators[c.Name]; exist {
+		seInstance, err = creator(c)
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		panic("invalid storage engine name")
+	}
 }
 
 func ClearForUnitTest() {

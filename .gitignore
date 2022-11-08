@@ -2,3 +2,5 @@
 src/bin/*
 */*.zip
 */*.cbz
+.DS_Store
+server/bin/*
