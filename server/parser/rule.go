@@ -7,8 +7,8 @@ import (
 	"path"
 	"strings"
 
-	"github.com/ocean2333/go-crawer/src/logger"
-	"github.com/ocean2333/go-crawer/src/net"
+	"github.com/ocean2333/go-crawer/server/logger"
+	"github.com/ocean2333/go-crawer/server/net"
 )
 
 const rulePath = "./rules"

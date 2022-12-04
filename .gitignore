@@ -1,4 +1,4 @@
 .idea
-src/bin/*
+server/bin/*
 */*.zip
 */*.cbz

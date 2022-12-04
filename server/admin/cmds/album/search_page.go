@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/ocean2333/go-crawer/src/model"
+	"github.com/ocean2333/go-crawer/server/model"
 	"github.com/spf13/cobra"
 )
 

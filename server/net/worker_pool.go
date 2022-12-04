@@ -6,9 +6,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ocean2333/go-crawer/src/config"
-	"github.com/ocean2333/go-crawer/src/logger"
-	"github.com/ocean2333/go-crawer/src/storage_engine"
+	"github.com/ocean2333/go-crawer/server/config"
+	"github.com/ocean2333/go-crawer/server/logger"
+	"github.com/ocean2333/go-crawer/server/storage_engine"
 )
 
 var (

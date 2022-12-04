@@ -4,7 +4,7 @@
 
 ### mac & linux
 1. `git clone` 
-2. `cd go-crawer/src`
+2. `cd go-crawer/server`
 3. `make all`
 4. start etcd service on configured address
 5. `cd bin && ./go-crawer`
@@ -12,7 +12,7 @@
 
 ### windows
 1. `git clone` 
-2. `cd go-crawer/src`
+2. `cd go-crawer/server`
 3. `.\build.ps1`
 4. start etcd service on configured address
 5. `cd bin`

@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/ocean2333/go-crawer/src/logger"
+	"github.com/ocean2333/go-crawer/server/logger"
 )
 
 var Transport *http.Transport

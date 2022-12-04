@@ -6,8 +6,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/ocean2333/go-crawer/src/common"
-	"github.com/ocean2333/go-crawer/src/config"
+	"github.com/ocean2333/go-crawer/server/common"
+	"github.com/ocean2333/go-crawer/server/config"
 )
 
 var (
